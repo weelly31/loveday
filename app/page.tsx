@@ -84,14 +84,47 @@ function Flower({ color, centerColor, delay, position, scale = 1 }: { color: str
       animate={{ y: 0, opacity: 1, scale: 1 }}
       transition={{ duration: 1.2, delay, type: 'spring', stiffness: 80 }}
     >
-      <div className="flex flex-col-reverse items-center">
+      <div className="flex flex-col items-center">
+        {/* Flower head */}
+        <motion.div
+          className="relative"
+          style={{ 
+            width: `${80 * scale}px`, 
+            height: `${80 * scale}px`,
+            marginBottom: `${-10 * scale}px`,
+            zIndex: 10
+          }}
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ duration: 0.8, delay: delay + 0.5, type: 'spring' }}
+        >
+          {/* Petals */}
+          {[0, 72, 144, 216, 288].map((rotation) => (
+            <div
+              key={rotation}
+              className="absolute"
+              style={{
+                width: `${32 * scale}px`,
+                height: `${48 * scale}px`,
+                backgroundColor: color,
+                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+                top: '50%',
+                left: '50%',
+                transformOrigin: 'center bottom',
+                transform: `translate(-50%, -${24 * scale}px) rotate(${rotation}deg)`,
+                opacity: 0.95
+              }}
+            />
+          ))}
+        </motion.div>
+
         {/* Stem */}
         <motion.div
-          className="relative bg-linear-to-t from-green-700 to-green-500 rounded-full"
+          className="relative bg-linear-to-b from-green-500 to-green-700 rounded-full"
           style={{ 
             width: `${4 * scale}px`, 
             height: `${100 * scale}px`,
-            transformOrigin: 'bottom'
+            transformOrigin: 'top'
           }}
           initial={{ scaleY: 0 }}
           animate={{ scaleY: 1 }}
@@ -126,52 +159,6 @@ function Flower({ color, centerColor, delay, position, scale = 1 }: { color: str
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: delay + 0.8, duration: 0.5 }}
-          />
-        </motion.div>
-
-        {/* Flower head */}
-        <motion.div
-          className="relative"
-          style={{ 
-            width: `${80 * scale}px`, 
-            height: `${80 * scale}px`,
-            marginBottom: `${-25 * scale}px`
-          }}
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 0.8, delay: delay + 0.5, type: 'spring' }}
-        >
-          {/* Petals */}
-          {[0, 72, 144, 216, 288].map((rotation) => (
-            <div
-              key={rotation}
-              className="absolute"
-              style={{
-                width: `${32 * scale}px`,
-                height: `${48 * scale}px`,
-                backgroundColor: color,
-                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-                top: '50%',
-                left: '50%',
-                transformOrigin: 'center bottom',
-                transform: `translate(-50%, -${24 * scale}px) rotate(${rotation}deg)`,
-                opacity: 0.95
-              }}
-            />
-          ))}
-          {/* Center */}
-          <div
-            className="absolute rounded-full shadow-inner"
-            style={{
-              width: `${20 * scale}px`,
-              height: `${20 * scale}px`,
-              backgroundColor: centerColor,
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 10,
-              border: '2px solid rgba(255,255,255,0.4)'
-            }}
           />
         </motion.div>
       </div>
