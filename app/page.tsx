@@ -89,9 +89,9 @@ function Flower({ color, centerColor, delay, position, scale = 1 }: { color: str
         <motion.div
           className="relative"
           style={{ 
-            width: `${80 * scale}px`, 
-            height: `${80 * scale}px`,
-            marginBottom: `${-10 * scale}px`,
+            width: `min(${80 * scale}px, ${16 * scale}vw)`, 
+            height: `min(${80 * scale}px, ${16 * scale}vw)`,
+            marginBottom: `min(${-10 * scale}px, ${-2 * scale}vw)`,
             zIndex: 10
           }}
           initial={{ scale: 0, rotate: -180 }}
@@ -104,8 +104,8 @@ function Flower({ color, centerColor, delay, position, scale = 1 }: { color: str
               key={rotation}
               className="absolute"
               style={{
-                width: `${32 * scale}px`,
-                height: `${48 * scale}px`,
+                width: `min(${32 * scale}px, ${6.4 * scale}vw)`,
+                height: `min(${48 * scale}px, ${9.6 * scale}vw)`,
                 backgroundColor: color,
                 borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
                 top: '50%',
@@ -122,8 +122,8 @@ function Flower({ color, centerColor, delay, position, scale = 1 }: { color: str
         <motion.div
           className="relative bg-linear-to-b from-green-500 to-green-700 rounded-full"
           style={{ 
-            width: `${4 * scale}px`, 
-            height: `${100 * scale}px`,
+            width: `min(${4 * scale}px, ${0.8 * scale}vw)`, 
+            height: `min(${100 * scale}px, ${20 * scale}vw)`,
             transformOrigin: 'top'
           }}
           initial={{ scaleY: 0 }}
@@ -134,10 +134,10 @@ function Flower({ color, centerColor, delay, position, scale = 1 }: { color: str
           <motion.div
             className="absolute bg-green-500 rounded-full"
             style={{
-              width: `${24 * scale}px`,
-              height: `${14 * scale}px`,
-              left: `${-22 * scale}px`,
-              top: `${40 * scale}px`,
+              width: `min(${24 * scale}px, ${4.8 * scale}vw)`,
+              height: `min(${14 * scale}px, ${2.8 * scale}vw)`,
+              left: `min(${-22 * scale}px, ${-4.4 * scale}vw)`,
+              top: `min(${40 * scale}px, ${8 * scale}vw)`,
               borderRadius: '50% 0 50% 50%',
               transform: 'rotate(-30deg)'
             }}
@@ -149,10 +149,10 @@ function Flower({ color, centerColor, delay, position, scale = 1 }: { color: str
           <motion.div
             className="absolute bg-green-600 rounded-full"
             style={{
-              width: `${24 * scale}px`,
-              height: `${14 * scale}px`,
-              right: `${-22 * scale}px`,
-              top: `${60 * scale}px`,
+              width: `min(${24 * scale}px, ${4.8 * scale}vw)`,
+              height: `min(${14 * scale}px, ${2.8 * scale}vw)`,
+              right: `min(${-22 * scale}px, ${-4.4 * scale}vw)`,
+              top: `min(${60 * scale}px, ${12 * scale}vw)`,
               borderRadius: '0 50% 50% 50%',
               transform: 'rotate(30deg)'
             }}
@@ -171,12 +171,27 @@ export default function Home() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [sparkles, setSparkles] = useState<{ id: number; x: number; y: number }[]>([]);
   const [windowSize, setWindowSize] = useState({ width: 800, height: 600 });
+  const [floatingHearts, setFloatingHearts] = useState<
+    { id: number; x: string; size: number; duration: number; delay: number; opacity: number }[]
+  >([]);
 
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const hearts = [...Array(10)].map((_, i) => ({
+      id: i,
+      x: `${5 + Math.random() * 90}%`,
+      size: 14 + Math.random() * 18,
+      duration: 12 + Math.random() * 8,
+      delay: i * 0.8,
+      opacity: 0.15 + Math.random() * 0.2,
+    }));
+    setFloatingHearts(hearts);
   }, []);
 
   const handleBloom = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
@@ -188,15 +203,6 @@ export default function Home() {
     setShowConfetti(true);
     setTimeout(() => setShowConfetti(false), 6000);
   }, []);
-
-  const floatingHearts = [...Array(10)].map((_, i) => ({
-    id: i,
-    x: `${5 + Math.random() * 90}%`,
-    size: 14 + Math.random() * 18,
-    duration: 12 + Math.random() * 8,
-    delay: i * 0.8,
-    opacity: 0.15 + Math.random() * 0.2,
-  }));
 
   const flowers = [
     { color: '#f8b4c8', centerColor: '#f7dc6f', position: 15, delay: 0.2, scale: 0.9 },
@@ -261,7 +267,7 @@ export default function Home() {
       />
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center px-4 py-16 md:py-20">
+      <div className="relative z-10 min-h-screen flex flex-col items-center px-4 sm:px-6 md:px-8 py-16 md:py-20">
 
         {/* Decorative sparkle icon */}
         <motion.div
@@ -380,14 +386,14 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
-              className="w-full max-w-5xl flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch mt-4"
+              className="w-full max-w-5xl flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-12 items-stretch mt-4"
             >
               {/* Love Letter */}
               <motion.div
                 initial={{ x: -80, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.9, ease: 'easeOut' }}
-                className="w-full lg:w-1/2 flex items-center justify-center"
+                className="w-full lg:w-1/2 flex items-center justify-center px-2 sm:px-0"
               >
                 <div
                   className="relative w-full max-w-lg rounded-2xl p-px overflow-hidden"
@@ -470,13 +476,14 @@ export default function Home() {
                 </motion.p>
 
                 {/* Flowers garden */}
-                <div className="relative w-full max-w-md h-64 sm:h-72 md:h-80">
+                <div className="relative w-full h-56 sm:h-64 md:h-72 lg:h-80 flex items-center justify-center">
+                  <div className="relative w-full max-w-[90%] sm:max-w-md h-full">
                   {/* Ground/grass */}
                   <motion.div
                     initial={{ scaleX: 0, opacity: 0 }}
                     animate={{ scaleX: 1, opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-6 rounded-full"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-4 sm:h-6 rounded-full"
                     style={{
                       background: 'radial-gradient(ellipse at center, rgba(74,222,128,0.2) 0%, transparent 70%)',
                     }}
@@ -497,8 +504,8 @@ export default function Home() {
                   {[0, 1].map((i) => (
                     <motion.div
                       key={`butterfly-${i}`}
-                      className="absolute text-xl"
-                      style={{ top: 20 + i * 40, left: i === 0 ? '20%' : '70%' }}
+                      className="absolute text-base sm:text-lg md:text-xl"
+                      style={{ top: 10 + i * 30, left: i === 0 ? '20%' : '70%' }}
                       animate={{
                         x: [0, 30, -20, 40, 0],
                         y: [0, -20, 10, -30, 0],
@@ -513,6 +520,7 @@ export default function Home() {
                       🦋
                     </motion.div>
                   ))}
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -526,7 +534,7 @@ export default function Home() {
           transition={{ delay: 2 }}
           className="mt-auto pt-12 text-rose-300/40 text-xs tracking-[0.2em] uppercase"
         >
-          Made with love
+          FROM WELL | Made with love
         </motion.p>
       </div>
     </div>
